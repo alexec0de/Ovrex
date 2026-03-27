@@ -15,4 +15,6 @@ public interface BackendServer {
     String getServerType();
 
     boolean isAvailable();
+    void addPlayer(ProxyPlayer player);
+    void removePlayer(ProxyPlayer player);
 }

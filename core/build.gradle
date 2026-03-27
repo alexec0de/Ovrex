@@ -1,0 +1,18 @@
+plugins {
+    id 'application'
+}
+
+application {
+    mainClass.set("dev.ovrex.core.OvrexBootstrap")
+}
+
+dependencies {
+    implementation(project(":api"))
+    implementation(project(":network"))
+    implementation(project(":tower"))
+    implementation(project(":plugin"))
+    implementation("ch.qos.logback:logback-classic:${property("logbackVersion")}")
+    implementation("org.yaml:snakeyaml:${property("snakeYamlVersion")}")
+    implementation("com.google.code.gson:gson:${property("gsonVersion")}")
+    implementation("io.netty:netty-all:${property("nettyVersion")}")
+}

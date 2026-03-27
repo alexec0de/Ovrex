@@ -7,10 +7,7 @@ import dev.ovrex.network.packet.impl.login.LoginDisconnectPacket;
 import dev.ovrex.network.packet.impl.login.LoginStartPacket;
 import dev.ovrex.network.packet.impl.login.LoginSuccessPacket;
 import dev.ovrex.network.packet.impl.login.SetCompressionPacket;
-import dev.ovrex.network.packet.impl.play.DisconnectPacket;
-import dev.ovrex.network.packet.impl.play.JoinGamePacket;
-import dev.ovrex.network.packet.impl.play.KeepAlivePacket;
-import dev.ovrex.network.packet.impl.play.RespawnPacket;
+import dev.ovrex.network.packet.impl.play.*;
 import dev.ovrex.network.packet.impl.status.PingPacket;
 import dev.ovrex.network.packet.impl.status.PongPacket;
 import dev.ovrex.network.packet.impl.status.StatusRequestPacket;
@@ -44,6 +41,7 @@ public class PacketRegistry {
         register(ProtocolState.PLAY, PacketDirection.SERVERBOUND, 0x12, KeepAlivePacket::new);
         register(ProtocolState.PLAY, PacketDirection.CLIENTBOUND, 0x28, JoinGamePacket::new);
         register(ProtocolState.PLAY, PacketDirection.CLIENTBOUND, 0x41, RespawnPacket::new);
+        register(ProtocolState.PLAY, PacketDirection.CLIENTBOUND, 0x67, SystemChatMessagePacket::new);
     }
 
     private static void register(ProtocolState state, PacketDirection direction, int id, Supplier<? extends Packet> supplier) {

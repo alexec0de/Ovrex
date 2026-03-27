@@ -88,7 +88,7 @@ public class NetworkServer {
     }
 
     @ChannelHandler.Sharable
-    private static class ConnectionHandler extends SimpleChannelInboundHandler<Packet> {
+    public static class ConnectionHandler extends SimpleChannelInboundHandler<Packet> {
 
         private final MinecraftConnection connection;
         @Setter
