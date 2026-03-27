@@ -1,0 +1,29 @@
+package dev.ovrex.network.packet.impl.play;
+
+import dev.ovrex.network.packet.Packet;
+import dev.ovrex.network.packet.PacketBuffer;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+public class KeepAlivePacket implements Packet {
+    private long keepAliveId;
+
+    @Override
+    public int getId() {
+        return 0x24;
+    }
+
+    @Override
+    public void read(PacketBuffer buffer) {
+        this.keepAliveId = buffer.readLong();
+    }
+
+    @Override
+    public void write(PacketBuffer buffer) {
+        buffer.writeLong(keepAliveId);
+    }
+}
