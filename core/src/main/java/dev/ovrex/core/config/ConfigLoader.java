@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
+import org.yaml.snakeyaml.nodes.Tag;
 import org.yaml.snakeyaml.representer.Representer;
 
 import java.io.*;
@@ -41,8 +42,16 @@ public class ConfigLoader {
         final DumperOptions options = new DumperOptions();
         options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
         options.setPrettyFlow(true);
+        options.setIndent(2);
+        options.setDefaultScalarStyle(DumperOptions.ScalarStyle.PLAIN);
 
-        final Yaml yaml = new Yaml(options);
+        final Representer representer = new Representer(options);
+        representer.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+        representer.addClassTag(OvrexConfig.class, Tag.MAP);
+        representer.addClassTag(OvrexConfig.TowerAuth.class, Tag.MAP);
+        representer.addClassTag(OvrexConfig.ServerEntry.class, Tag.MAP);
+
+        final Yaml yaml = new Yaml(representer, options);
 
         try (final Writer writer = new FileWriter(CONFIG_FILE)) {
             yaml.dump(config, writer);

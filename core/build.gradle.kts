@@ -1,9 +1,22 @@
 plugins {
-    id 'application'
+    `java-library`
+    application
 }
 
 application {
     mainClass.set("dev.ovrex.core.OvrexBootstrap")
+}
+
+tasks.jar {
+    manifest {
+        attributes(
+            "Main-Class" to "dev.ovrex.core.OvrexBootstrap"
+        )
+    }
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
 }
 
 dependencies {
