@@ -2,11 +2,9 @@ package dev.ovrex.network.packet;
 
 import dev.ovrex.network.packet.enums.PacketDirection;
 import dev.ovrex.network.packet.enums.ProtocolState;
+import dev.ovrex.network.packet.impl.configuration.*;
 import dev.ovrex.network.packet.impl.handshake.HandshakePacket;
-import dev.ovrex.network.packet.impl.login.LoginDisconnectPacket;
-import dev.ovrex.network.packet.impl.login.LoginStartPacket;
-import dev.ovrex.network.packet.impl.login.LoginSuccessPacket;
-import dev.ovrex.network.packet.impl.login.SetCompressionPacket;
+import dev.ovrex.network.packet.impl.login.*;
 import dev.ovrex.network.packet.impl.play.*;
 import dev.ovrex.network.packet.impl.status.PingPacket;
 import dev.ovrex.network.packet.impl.status.PongPacket;
@@ -31,20 +29,32 @@ public class PacketRegistry {
         register(ProtocolState.STATUS, PacketDirection.CLIENTBOUND, 0x00, StatusResponsePacket::new);
         register(ProtocolState.STATUS, PacketDirection.CLIENTBOUND, 0x01, PongPacket::new);
 
-        register(ProtocolState.LOGIN, PacketDirection.SERVERBOUND, 0x00, LoginStartPacket::new);
         register(ProtocolState.LOGIN, PacketDirection.CLIENTBOUND, 0x00, LoginDisconnectPacket::new);
         register(ProtocolState.LOGIN, PacketDirection.CLIENTBOUND, 0x02, LoginSuccessPacket::new);
         register(ProtocolState.LOGIN, PacketDirection.CLIENTBOUND, 0x03, SetCompressionPacket::new);
 
-        register(ProtocolState.PLAY, PacketDirection.CLIENTBOUND, 0x1A, DisconnectPacket::new);
-        register(ProtocolState.PLAY, PacketDirection.CLIENTBOUND, 0x24, KeepAlivePacket::new);
-        register(ProtocolState.PLAY, PacketDirection.SERVERBOUND, 0x12, KeepAlivePacket::new);
-        register(ProtocolState.PLAY, PacketDirection.CLIENTBOUND, 0x28, JoinGamePacket::new);
-        register(ProtocolState.PLAY, PacketDirection.CLIENTBOUND, 0x41, RespawnPacket::new);
-        register(ProtocolState.PLAY, PacketDirection.CLIENTBOUND, 0x67, SystemChatMessagePacket::new);
+        register(ProtocolState.LOGIN, PacketDirection.SERVERBOUND, 0x00, LoginStartPacket::new);
+        register(ProtocolState.LOGIN, PacketDirection.SERVERBOUND, 0x03, LoginAcknowledgedPacket::new);
+
+        register(ProtocolState.CONFIGURATION, PacketDirection.CLIENTBOUND, 0x03, FinishConfigurationPacket::new);
+        register(ProtocolState.CONFIGURATION, PacketDirection.CLIENTBOUND, 0x0E, ClientboundKnownPacksPacket::new);
+
+        register(ProtocolState.CONFIGURATION, PacketDirection.SERVERBOUND, 0x03, FinishConfigurationAckPacket::new);
+
+        register(ProtocolState.PLAY, PacketDirection.CLIENTBOUND, 0x1D, DisconnectPacket::new);
+        register(ProtocolState.PLAY, PacketDirection.CLIENTBOUND, 0x27, KeepAliveClientboundPacket::new);
+        register(ProtocolState.PLAY, PacketDirection.CLIENTBOUND, 0x2B, JoinGamePacket::new);
+        register(ProtocolState.PLAY, PacketDirection.CLIENTBOUND, 0x47, RespawnPacket::new);
+        register(ProtocolState.PLAY, PacketDirection.CLIENTBOUND, 0x70, StartConfigurationPacket::new);
+
+        register(ProtocolState.PLAY, PacketDirection.SERVERBOUND, 0x05, ServerboundChatCommandPacket::new);
+        register(ProtocolState.PLAY, PacketDirection.SERVERBOUND, 0x07, ServerboundChatPacket::new);
+        register(ProtocolState.PLAY, PacketDirection.SERVERBOUND, 0x1A, KeepAliveServerboundPacket::new);
+        register(ProtocolState.PLAY, PacketDirection.SERVERBOUND, 0x0E, AcknowledgeConfigurationPacket::new);
     }
 
-    private static void register(ProtocolState state, PacketDirection direction, int id, Supplier<? extends Packet> supplier) {
+    private static void register(ProtocolState state, PacketDirection direction, int id,
+                                 Supplier<? extends Packet> supplier) {
         REGISTRY.computeIfAbsent(state, k -> new EnumMap<>(PacketDirection.class))
                 .computeIfAbsent(direction, k -> new HashMap<>())
                 .put(id, supplier);

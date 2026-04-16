@@ -22,6 +22,8 @@ public class HandshakeHandler implements PacketHandler {
             log.debug("Handshake from {} (protocol: {}, next: {})",
                     connection.getRemoteAddress(), handshake.getProtocolVersion(), handshake.getNextState());
 
+            connection.setProtocolVersion(handshake.getProtocolVersion());
+
             if (handshake.getNextState() == 1) {
                 connection.setDecoderState(ProtocolState.STATUS);
                 connection.setConnectionState(ConnectionState.STATUS);

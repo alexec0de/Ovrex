@@ -13,7 +13,7 @@ public class JoinGamePacket implements Packet {
 
     @Override
     public int getId() {
-        return 0x28;
+        return 0x2B;
     }
 
     @Override

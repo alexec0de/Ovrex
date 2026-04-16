@@ -49,6 +49,8 @@ public class StatusHandler implements PacketHandler {
         description.addProperty("text", motd);
         response.add("description", description);
 
+        response.addProperty("enforcesSecureChat", false);
+
         return response;
     }
 

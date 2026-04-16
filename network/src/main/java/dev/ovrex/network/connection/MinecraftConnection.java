@@ -17,6 +17,8 @@ public class MinecraftConnection {
     private volatile ProtocolState protocolState;
     @Setter
     private volatile ConnectionState connectionState;
+    @Setter
+    private volatile int protocolVersion;
 
     public MinecraftConnection(Channel channel) {
         this.channel = channel;

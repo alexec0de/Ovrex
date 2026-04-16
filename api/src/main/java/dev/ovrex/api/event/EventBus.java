@@ -3,9 +3,9 @@ package dev.ovrex.api.event;
 import dev.ovrex.api.plugin.OvrexPlugin;
 
 public interface EventBus {
-    void register(OvrexPlugin plugin, Object listener);
+    void register(OvrexPlugin plugin, Listener listener);
 
-    void unregister(Object listener);
+    void unregister(Listener listener);
 
     void unregisterAll(OvrexPlugin plugin);
 

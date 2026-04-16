@@ -1,4 +1,4 @@
-package dev.ovrex.network.packet.impl.play;
+package dev.ovrex.network.packet.impl.configuration;
 
 import dev.ovrex.network.packet.Packet;
 import dev.ovrex.network.packet.PacketBuffer;
@@ -6,14 +6,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-@Getter
-public class RespawnPacket implements Packet {
+public class ClientInfoPacket implements Packet {
 
     private byte[] rawData;
 
     @Override
     public int getId() {
-        return 0x47;
+        return 0x00;
     }
 
     @Override
@@ -23,6 +22,8 @@ public class RespawnPacket implements Packet {
 
     @Override
     public void write(PacketBuffer buffer) {
-        buffer.writeBytes(rawData);
+        if (rawData != null) {
+            buffer.writeBytes(rawData);
+        }
     }
 }

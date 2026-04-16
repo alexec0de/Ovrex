@@ -1,10 +1,7 @@
 package dev.ovrex.core.impl;
 
 import com.sun.source.util.Plugin;
-import dev.ovrex.api.event.Event;
-import dev.ovrex.api.event.EventBus;
-import dev.ovrex.api.event.EventHandler;
-import dev.ovrex.api.event.EventPriority;
+import dev.ovrex.api.event.*;
 import dev.ovrex.api.plugin.OvrexPlugin;
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,7 +25,7 @@ public class OvrexEventBus implements EventBus {
     });
 
     @Override
-    public void register(OvrexPlugin plugin, Object listener) {
+    public void register(OvrexPlugin plugin, Listener listener) {
         for (Method method : listener.getClass().getDeclaredMethods()) {
             EventHandler annotation = method.getAnnotation(EventHandler.class);
             if (annotation == null) continue;
@@ -62,7 +59,7 @@ public class OvrexEventBus implements EventBus {
     }
 
     @Override
-    public void unregister(Object listener) {
+    public void unregister(Listener listener) {
         listeners.values().forEach(list ->
                 list.removeIf(rl -> rl.listener == listener));
     }

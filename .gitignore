@@ -43,5 +43,5 @@ bin/
 .DS_Store
 
 logs/
-
+plugins/
 config.yml

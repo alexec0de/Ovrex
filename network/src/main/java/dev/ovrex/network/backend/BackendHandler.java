@@ -3,6 +3,7 @@ package dev.ovrex.network.backend;
 import dev.ovrex.network.connection.PlayerConnection;
 import dev.ovrex.network.packet.Packet;
 import dev.ovrex.network.packet.impl.play.DisconnectPacket;
+import dev.ovrex.network.packet.impl.play.KeepAliveClientboundPacket;
 import dev.ovrex.network.packet.impl.play.KeepAlivePacket;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -13,9 +14,23 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class BackendHandler extends SimpleChannelInboundHandler<Packet> {
     private final PlayerConnection playerConnection;
+    private volatile boolean paused = false;
+
+    public void pause() {
+        this.paused = true;
+    }
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Packet packet) {
+        if (paused) {
+            log.debug("BackendHandler paused, dropping packet 0x{}",
+                    Integer.toHexString(packet.getId()));
+            return;
+        }
+        log.debug("Backend → client: id=0x{} ({})",
+                Integer.toHexString(packet.getId()),
+                packet.getClass().getSimpleName());
+
         if (packet instanceof DisconnectPacket disconnect) {
             log.info("Backend disconnected player {} with reason: {}",
                     playerConnection.getUsername(), disconnect.getReason());
@@ -23,7 +38,7 @@ public class BackendHandler extends SimpleChannelInboundHandler<Packet> {
             return;
         }
 
-        if (packet instanceof KeepAlivePacket) {
+        if (packet instanceof KeepAliveClientboundPacket) {
             playerConnection.getClientConnection().sendPacket(packet);
             return;
         }

@@ -23,9 +23,7 @@ public class LoginStartPacket implements Packet {
     @Override
     public void read(PacketBuffer buffer) {
         this.username = buffer.readString(16);
-        if (buffer.readableBytes() >= 16) {
-            this.playerUUID = buffer.readUUID();
-        }
+        this.playerUUID = buffer.readUUID();
     }
 
     @Override
@@ -33,6 +31,8 @@ public class LoginStartPacket implements Packet {
         buffer.writeString(username);
         if (playerUUID != null) {
             buffer.writeUUID(playerUUID);
+        } else {
+            buffer.writeUUID(new UUID(0, 0));
         }
     }
 }

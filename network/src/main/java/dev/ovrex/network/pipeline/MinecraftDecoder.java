@@ -31,17 +31,26 @@ public class MinecraftDecoder extends MessageToMessageDecoder<ByteBuf> {
             return;
         }
 
-        final PacketBuffer buffer = new PacketBuffer(msg);
+        PacketBuffer buffer = new PacketBuffer(msg);
         final int packetId = buffer.readVarInt();
+        int readerIndex = msg.readerIndex();
 
         Packet packet = PacketRegistry.createPacket(state, direction, packetId);
 
+
         if (packet != null) {
+            log.debug("Decoded: state={} dir={} id=0x{}",
+                    state, direction, Integer.toHexString(packetId));
             try {
                 packet.read(buffer);
             } catch (Exception e) {
-                log.warn("Error decoding packet 0x{} in state {}", Integer.toHexString(packetId), state, e);
-                return;
+                log.warn("Error decoding packet 0x{} in state {} direction {}: {}",
+                        Integer.toHexString(packetId), state, direction, e.getMessage());
+                msg.readerIndex(readerIndex);
+                buffer = new PacketBuffer(msg);
+                buffer.readVarInt();
+                byte[] remaining = buffer.readRemainingBytes();
+                packet = new UnknownPacket(packetId, remaining);
             }
         } else {
             byte[] remaining = buffer.readRemainingBytes();
